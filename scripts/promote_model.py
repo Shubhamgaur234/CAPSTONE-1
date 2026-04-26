@@ -29,7 +29,7 @@ def promote_model():
 
     model_name = "my_model"
 
-    # get latest registered version
+    # get latest model version
     versions = client.search_model_versions(
         f"name='{model_name}'"
     )
@@ -37,11 +37,15 @@ def promote_model():
     if not versions:
         raise Exception("No model versions found")
 
-    latest_version = max(
-        [int(v.version) for v in versions]
+    # keep as STRING (important)
+    latest_version = str(
+        max(
+            int(v.version)
+            for v in versions
+        )
     )
 
-    # Promote using alias (modern replacement for stages)
+    # promote using alias
     client.set_registered_model_alias(
         name=model_name,
         alias="champion",
@@ -49,7 +53,7 @@ def promote_model():
     )
 
     print(
-        f"Model version {latest_version} promoted to Production (champion)"
+        f"Model version {latest_version} promoted to Production"
     )
 
 
