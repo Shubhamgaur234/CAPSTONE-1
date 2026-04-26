@@ -1,12 +1,9 @@
-# promote model
-
 import os
 import mlflow
 
 
 def promote_model():
 
-    # ---------------- Production / GitHub Actions ----------------
     dagshub_token = os.getenv("CAPSTONE_TEST")
     if not dagshub_token:
         raise EnvironmentError(
@@ -16,40 +13,47 @@ def promote_model():
     os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
     os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
 
-    dagshub_url = "https://dagshub.com"
-    repo_owner = "gaur3786"
-    repo_name = "CAPSTONE-1"
-
     mlflow.set_tracking_uri(
-        f"{dagshub_url}/{repo_owner}/{repo_name}.mlflow"
+        "https://dagshub.com/gaur3786/CAPSTONE-1.mlflow"
     )
-    # ------------------------------------------------------------
 
-    client = mlflow.MlflowClient()
+    client = mlflow.tracking.MlflowClient()
 
     model_name = "my_model"
 
-    # get latest model version
+    # latest registered version
     versions = client.search_model_versions(
         f"name='{model_name}'"
     )
 
     if not versions:
-        raise Exception("No model versions found")
+        raise Exception("No versions found")
 
-    # keep as STRING (important)
     latest_version = str(
-        max(
-            int(v.version)
-            for v in versions
-        )
+        max(int(v.version) for v in versions)
     )
 
-    # promote using alias
-    client.set_registered_model_alias(
+    # archive old production versions
+    try:
+        prod_versions = client.get_latest_versions(
+            model_name,
+            stages=["Production"]
+        )
+
+        for v in prod_versions:
+            client.transition_model_version_stage(
+                name=model_name,
+                version=v.version,
+                stage="Archived"
+            )
+    except:
+        pass
+
+    # promote latest to production
+    client.transition_model_version_stage(
         name=model_name,
-        alias="champion",
-        version=latest_version
+        version=latest_version,
+        stage="Production"
     )
 
     print(
