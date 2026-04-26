@@ -9,6 +9,9 @@ jobs:
   project-testing:
     runs-on: ubuntu-latest
 
+    env:
+      CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,16 +24,18 @@ jobs:
       - name: Install DVC
         run: pip install dvc[s3]
 
-      - name: Cache pip
+      - name: Cache pip dependencies
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
-      - name: Install requirements
-        run: pip install -r requirements.txt
+      - name: Install project dependencies
+        run: |
+          pip install -r requirements.txt
 
-      - name: Run pipeline
-        env: 
-          CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
-        run: dvc repro
+      - name: Run DVC pipeline
+        run: |
+          dvc repro

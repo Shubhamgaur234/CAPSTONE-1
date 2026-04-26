@@ -48,7 +48,8 @@ mlflow.set_tracking_uri(
 dagshub.init(
     repo_owner="gaur3786",
     repo_name="CAPSTONE-1",
-    mlflow=True
+    mlflow=True,
+    token=os.getenv("CAPSTONE_TEST")
 )
 # -------------------------------------------------------------------------------------
 
