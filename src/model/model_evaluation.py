@@ -20,37 +20,36 @@ from src.logger import logging
 
 # Below code block is for production use
 # -------------------------------------------------------------------------------------
-# dagshub_token = os.getenv("CAPSTONE_TEST")
-# if not dagshub_token:
-#     raise EnvironmentError(
-#         "CAPSTONE_TEST environment variable is not set"
-#     )
+dagshub_token = os.getenv("CAPSTONE_TEST")
+if not dagshub_token:
+    raise EnvironmentError(
+         "CAPSTONE_TEST environment variable is not set"
+     )
+os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
 
-# os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
-# os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+dagshub_url = "https://dagshub.com"
+repo_owner = "gaur3786"
+repo_name = "CAPSTONE-1"
 
-# dagshub_url = "https://dagshub.com"
-# repo_owner = "gaur3786"
-# repo_name = "CAPSTONE-1"
-
-# mlflow.set_tracking_uri(
-#   f"{dagshub_url}/{repo_owner}/{repo_name}.mlflow"
-# )
+mlflow.set_tracking_uri(
+   f"{dagshub_url}/{repo_owner}/{repo_name}.mlflow"
+ )
 # -------------------------------------------------------------------------------------
 
 
 # local use
 # -------------------------------------------------------------------------------------
-mlflow.set_tracking_uri(
-    "https://dagshub.com/gaur3786/CAPSTONE-1.mlflow"
-)
+#mlflow.set_tracking_uri(
+#    "https://dagshub.com/gaur3786/CAPSTONE-1.mlflow"
+#)
 
-dagshub.init(
-    repo_owner="gaur3786",
-    repo_name="CAPSTONE-1",
-    mlflow=True,
-    token=os.getenv("CAPSTONE_TEST")
-)
+#dagshub.init(
+#    repo_owner="gaur3786",
+#    repo_name="CAPSTONE-1",
+#    mlflow=True,
+  
+#)
 # -------------------------------------------------------------------------------------
 
 

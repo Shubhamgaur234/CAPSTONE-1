@@ -34,16 +34,16 @@ if dagshub_token:
 
 # Below code block is for local use
 # -------------------------------------------------------------------------------------
-else:
-    mlflow.set_tracking_uri(
-        "https://dagshub.com/gaur3786/CAPSTONE-1.mlflow"
-    )
+#else:
+    #mlflow.set_tracking_uri(
+     #   "https://dagshub.com/gaur3786/CAPSTONE-1.mlflow"
+    #)
 
-    dagshub.init(
-        repo_owner="gaur3786",
-        repo_name="CAPSTONE-1",
-        mlflow=True
-    )
+    #dagshub.init(
+       # repo_owner="gaur3786",
+      #  repo_name="CAPSTONE-1",
+      #  mlflow=True
+    #)
 # -------------------------------------------------------------------------------------
 
 
