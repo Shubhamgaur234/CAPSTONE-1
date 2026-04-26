@@ -3,44 +3,55 @@
 import os
 import mlflow
 
+
 def promote_model():
-    # Set up DagsHub credentials for MLflow tracking
+
+    # ---------------- Production / GitHub Actions ----------------
     dagshub_token = os.getenv("CAPSTONE_TEST")
     if not dagshub_token:
-        raise EnvironmentError("CAPSTONE_TEST environment variable is not set")
+        raise EnvironmentError(
+            "CAPSTONE_TEST environment variable is not set"
+        )
 
     os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
     os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
 
     dagshub_url = "https://dagshub.com"
-    repo_owner = "vikashdas770"
-    repo_name = "YT-Capstone-Project"
+    repo_owner = "gaur3786"
+    repo_name = "CAPSTONE-1"
 
-    # Set up MLflow tracking URI
-    mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
+    mlflow.set_tracking_uri(
+        f"{dagshub_url}/{repo_owner}/{repo_name}.mlflow"
+    )
+    # ------------------------------------------------------------
 
     client = mlflow.MlflowClient()
 
     model_name = "my_model"
-    # Get the latest version in staging
-    latest_version_staging = client.get_latest_versions(model_name, stages=["Staging"])[0].version
 
-    # Archive the current production model
-    prod_versions = client.get_latest_versions(model_name, stages=["Production"])
-    for version in prod_versions:
-        client.transition_model_version_stage(
-            name=model_name,
-            version=version.version,
-            stage="Archived"
-        )
-
-    # Promote the new model to production
-    client.transition_model_version_stage(
-        name=model_name,
-        version=latest_version_staging,
-        stage="Production"
+    # get latest registered version
+    versions = client.search_model_versions(
+        f"name='{model_name}'"
     )
-    print(f"Model version {latest_version_staging} promoted to Production")
+
+    if not versions:
+        raise Exception("No model versions found")
+
+    latest_version = max(
+        [int(v.version) for v in versions]
+    )
+
+    # Promote using alias (modern replacement for stages)
+    client.set_registered_model_alias(
+        name=model_name,
+        alias="champion",
+        version=latest_version
+    )
+
+    print(
+        f"Model version {latest_version} promoted to Production (champion)"
+    )
+
 
 if __name__ == "__main__":
     promote_model()
