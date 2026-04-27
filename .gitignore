@@ -24,8 +24,6 @@ var/
 *.egg
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
 
@@ -47,7 +45,7 @@ coverage.xml
 *.mo
 *.pot
 
-# Django stuff:
+# Django stuff
 *.log
 
 # Sphinx documentation
@@ -63,8 +61,8 @@ target/
 *.db
 *.rdb
 
-# Pycharm
-.idea
+# PyCharm
+.idea/
 
 # VS Code
 .vscode/
@@ -72,22 +70,27 @@ target/
 # Spyder
 .spyproject/
 
-# Jupyter NB Checkpoints
+# Jupyter
 .ipynb_checkpoints/
 
-# exclude data from source control by default
+# Project folders
 /data/
+data/
+models/
+local_s3/
+notebooks/
 
-# Mac OS-specific storage files
+# Mac
 .DS_Store
 
-# vim
+# Vim
 *.swp
 *.swo
 
-# Mypy cache
+# Mypy
 .mypy_cache/
-notebooks/
-local_s3/
-data/
-models/
+
+# Ignore binaries / large files
+eksctl.exe
+eksctl.zip
+kubectl.exe
